@@ -22,6 +22,9 @@ private:
     QPushButton* clockButton{};
     QPushButton* powerButton{};
 
+    QPushButton* modeButton{};
+    QPushButton* defrostButton{};
+
     QPushButton* startButton{};
     QPushButton* stopButton{};
 };

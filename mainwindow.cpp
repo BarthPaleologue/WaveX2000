@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QtUiTools/QtUiTools>
 #include <iostream>
+#include "Transitions.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
