@@ -10,6 +10,17 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    stateMachine = new QStateMachine();
+
+    auto idleState = new QState();
+    stateMachine->addState(idleState);
+
+    auto clockEditState = new QState();
+    stateMachine->addState(clockEditState);
+
+
+    cookIndicator = findChild<QLabel*>("cookIndicator");
+
     clockButton = findChild<QPushButton*>("clockButton");
     powerButton = findChild<QPushButton*>("powerButton");
 

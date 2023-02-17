@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QPushButton>
+#include <QStateMachine>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,6 +20,10 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    QStateMachine* stateMachine{};
+
+    QLabel* cookIndicator{};
 
     QPushButton* clockButton{};
     QPushButton* powerButton{};
