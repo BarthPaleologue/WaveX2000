@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QDial>
 #include <QLCDNumber>
 #include <QLabel>
 #include <QMainWindow>
@@ -35,6 +36,8 @@ class MainWindow : public QMainWindow {
     void pulseHour();
     void pulseMinute();
 
+    void manageDial(int value);
+
    private:
     static const int DEFAULT_DURATION = 60;
 
@@ -64,6 +67,8 @@ class MainWindow : public QMainWindow {
     QPushButton* stopButton{};
 
     QLCDNumber* clockDisplay{};
+
+    QDial* dial{};
 
     int hours{0};
     int minutes{0};

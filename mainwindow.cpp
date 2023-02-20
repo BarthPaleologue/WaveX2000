@@ -23,6 +23,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     clockDisplay = findChild<QLCDNumber *>("clockDisplay");
 
+    dial = findChild<QDial *>("dial");
+    connect(dial, SIGNAL(valueChanged(int)), this, SLOT(manageDial(int)));
+
     stateMachine = new QStateMachine();
 
     clockTimer = new QTimer(this);
@@ -256,6 +259,10 @@ void MainWindow::resetStateMachine() {
     stateMachine->setInitialState(idleState);
     stateMachine->start();
     setIdle();
+}
+
+void MainWindow::manageDial(int value) {
+    std::cout << "Dial value: " << value << std::endl;
 }
 
 MainWindow::~MainWindow() {
