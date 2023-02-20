@@ -103,10 +103,10 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 void MainWindow::setIdle() {
-    // TODO:
     std::cout << "Set state to Idle" << std::endl;
-    cookIndicator->setText("Idle");
+    cookIndicator->setStyleSheet("background-color: #000000;");
 
+    cookingTimer->stop();
     pulseHourTimer->stop();
     pulseMinuteTimer->stop();
 
@@ -117,7 +117,6 @@ void MainWindow::setIdle() {
 }
 
 void MainWindow::setClockEditState() {
-    // TODO:
     std::cout << "Set state to ClockEdit (Hours)" << std::endl;
 
     pulseHourTimer->start();
@@ -126,7 +125,6 @@ void MainWindow::setClockEditState() {
 }
 
 void MainWindow::setClockMinuteEditState() {
-    // TODO:
     std::cout << "Set state to ClockEdit (Minutes)" << std::endl;
 
     pulseHourTimer->stop();
@@ -136,10 +134,9 @@ void MainWindow::setClockMinuteEditState() {
 }
 
 void MainWindow::setCooking() {
-    // TODO:
     // Starts cooking and decrements the time
     std::cout << "Set state to Cooking" << std::endl;
-    cookIndicator->setText("Cooking");
+    cookIndicator->setStyleSheet("background-color: #ffff00;");
 
     cookingTimer->start();
 
@@ -147,33 +144,25 @@ void MainWindow::setCooking() {
 }
 
 void MainWindow::setDurationEdit() {
-    // TODO:
     std::cout << "Set state to DurationEdit" << std::endl;
-
     displayDuration();
 }
 
 void MainWindow::setDefrost() {
-    // TODO:
     // The user will enter the weight of the food to be defrosted
     // The time will be calculated based on the weight
     std::cout << "Set state to Defrost" << std::endl;
-    cookIndicator->setText("Defrost");
-
+    cookIndicator->setStyleSheet("background-color: #0000ff;");
     displayWeight();
 }
 
 void MainWindow::setPowerEdit() {
-    // TODO:
     std::cout << "Set state to PowerEdit" << std::endl;
-
     displayPower();
 }
 
 void MainWindow::setModeEdit() {
-    // TODO:
     std::cout << "Set state to ModeEdit" << std::endl;
-
     displayMode();
 }
 
@@ -246,6 +235,16 @@ void MainWindow::displayPower() {
 void MainWindow::displayMode() {
     // display the mode
     clockDisplay->display(QString("%1").arg(this->mode, 2, 10, QChar('0')));
+    /*if (this->mode == 0) {
+        clockDisplay->display("MICROWAVE");
+        return;
+    } else if (this->mode == 1) {
+        clockDisplay->display("GRILL");
+        return;
+    } else if (this->mode == 2) {
+        clockDisplay->display("GRILL + MICROWAVE");
+        return;
+    }*/
 }
 
 void MainWindow::displayWeight() {
@@ -283,7 +282,7 @@ void MainWindow::manageDial(int value) {
         displayPower();
     } else if (stateMachine->configuration().contains(modeEditState)) {
         std::cout << "Update mode" << std::endl;
-        mode = 1 + value % 3;
+        mode = 1 + value % 2;
         displayMode();
     } else if (stateMachine->configuration().contains(defrostState)) {
         std::cout << "Update weight" << std::endl;
