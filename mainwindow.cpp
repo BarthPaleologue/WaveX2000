@@ -30,10 +30,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(clockTimer, SIGNAL(timeout()), this, SLOT(updateClock()));
     clockTimer->start();
 
+    cookingTimer = new QTimer(this);
+    cookingTimer->setInterval(1000);  // 1 second
+    connect(cookingTimer, SIGNAL(timeout()), this, SLOT(decreaseDuration()));
+
     idleState = new QState();
     stateMachine->addState(idleState);
 
-    auto cookingState = new QState();
+    cookingState = new QState();
     stateMachine->addState(cookingState);
     addTrans(idleState, cookingState, startButton, SIGNAL(clicked()), this, SLOT(setCooking()));
     addTrans(cookingState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
@@ -92,6 +96,8 @@ void MainWindow::setIdle() {
     std::cout << "Set state to Idle" << std::endl;
     cookIndicator->setText("Idle");
 
+    duration = 60;
+
     // display the current time stored in this.hours and this.minutes
     displayClock();
 }
@@ -115,6 +121,8 @@ void MainWindow::setCooking() {
     // Starts cooking and decrements the time
     std::cout << "Set state to Cooking" << std::endl;
     cookIndicator->setText("Cooking");
+
+    cookingTimer->start();
 
     displayDuration();
 }
@@ -163,6 +171,19 @@ void MainWindow::updateClock() {
     // if current state is idle, update the clock display
     if (stateMachine->configuration().contains(idleState)) {
         displayClock();
+    }
+}
+
+void MainWindow::decreaseDuration() {
+    std::cout << "Decrease duration" << std::endl;
+    duration--;
+    if (duration == 0) {
+        cookingTimer->stop();
+        setIdle();
+    }
+    // if current state is cooking, update the duration display
+    if (stateMachine->configuration().contains(cookingState)) {
+        displayDuration();
     }
 }
 

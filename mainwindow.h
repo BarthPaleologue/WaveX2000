@@ -30,6 +30,7 @@ class MainWindow : public QMainWindow {
     void setPowerEdit();
     void setModeEdit();
     void updateClock();
+    void decreaseDuration();
 
    private:
     void displayClock();
@@ -42,6 +43,7 @@ class MainWindow : public QMainWindow {
 
     QStateMachine* stateMachine{};
     QState* idleState{};
+    QState* cookingState{};
 
     QLabel* cookIndicator{};
 
@@ -59,6 +61,8 @@ class MainWindow : public QMainWindow {
     int hours{0};
     int minutes{0};
     QTimer* clockTimer{};
+
+    QTimer* cookingTimer{};
 
     int duration{60};
     int power{100};
