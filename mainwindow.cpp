@@ -111,6 +111,9 @@ void MainWindow::setIdle() {
     pulseMinuteTimer->stop();
 
     duration = MainWindow::DEFAULT_DURATION;
+    power = MainWindow::DEFAULT_POWER;
+    mode = MainWindow::DEFAULT_MODE;
+    weight = MainWindow::DEFAULT_WEIGHT;
 
     // display the current time stored in this.hours and this.minutes
     displayClock();

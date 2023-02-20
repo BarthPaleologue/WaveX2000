@@ -15,6 +15,14 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
+namespace Mode {
+enum Mode {
+    MICROWAVE = 0,
+    GRILL = 1,
+    MICROWAVE_GRILL = 2,
+};
+}
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
@@ -40,6 +48,9 @@ class MainWindow : public QMainWindow {
 
    private:
     static const int DEFAULT_DURATION = 60;
+    static const int DEFAULT_POWER = 100;
+    static const int DEFAULT_MODE = Mode::Mode::MICROWAVE;
+    static const int DEFAULT_WEIGHT = 50;
 
     void displayClock();
     void displayDuration();
@@ -90,8 +101,8 @@ class MainWindow : public QMainWindow {
     QTimer* cookingTimer{};
 
     int duration{DEFAULT_DURATION};
-    int power{100};
-    int mode{0};
-    int weight{50};
+    int power{DEFAULT_POWER};
+    int mode{DEFAULT_MODE};
+    int weight{DEFAULT_WEIGHT};
 };
 #endif  // MAINWINDOW_H
