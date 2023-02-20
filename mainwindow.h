@@ -32,12 +32,19 @@ class MainWindow : public QMainWindow {
     void updateClock();
     void decreaseDuration();
 
+    void pulseHour();
+    void pulseMinute();
+
    private:
+    static const int DEFAULT_DURATION = 60;
+
     void displayClock();
     void displayDuration();
     void displayPower();
     void displayMode();
     void displayWeight();
+
+    void resetStateMachine();
 
     Ui::MainWindow* ui;
 
@@ -61,10 +68,14 @@ class MainWindow : public QMainWindow {
     int hours{0};
     int minutes{0};
     QTimer* clockTimer{};
+    QTimer* pulseHourTimer{};
+    int pulseHourParity{0};
+    QTimer* pulseMinuteTimer{};
+    int pulseMinuteParity{0};
 
     QTimer* cookingTimer{};
 
-    int duration{60};
+    int duration{DEFAULT_DURATION};
     int power{100};
     int mode{0};
     int weight{50};
