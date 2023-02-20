@@ -21,9 +21,12 @@ class MainWindow : public QMainWindow {
    public slots:
     void setIdle();
     void setClockEditState();
+    void setClockMinuteEditState();
     void setCooking();
+    void setDurationEdit();
     void setDefrost();
     void setPowerEdit();
+    void setModeEdit();
 
    private:
     Ui::MainWindow* ui;
