@@ -54,21 +54,21 @@ MainWindow::MainWindow(QWidget *parent)
     addTrans(cookingState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
     addTrans(cookingState, cookingState, startButton, SIGNAL(clicked()), this, SLOT(setCooking()));
 
-    auto durationEditState = new QState();
+    durationEditState = new QState();
     stateMachine->addState(durationEditState);
     addTrans(durationEditState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
     addTrans(durationEditState, cookingState, startButton, SIGNAL(clicked()), this, SLOT(setCooking()));
 
     ////////////////////// Clock Edit State //////////////////////
 
-    auto clockEditState = new QState();
+    clockEditState = new QState();
     stateMachine->addState(clockEditState);
     addTrans(idleState, clockEditState, clockButton, SIGNAL(clicked()), this, SLOT(setClockEditState()));
     addTrans(clockEditState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
 
     // add substates to the clockEditState (edit hours, edit minutes)
-    auto editHoursState = new QState(clockEditState);
-    auto editMinutesState = new QState(clockEditState);
+    editHoursState = new QState(clockEditState);
+    editMinutesState = new QState(clockEditState);
 
     // add transitions to the substates
     addTrans(editHoursState, editMinutesState, clockButton, SIGNAL(clicked()), this, SLOT(setClockMinuteEditState()));
@@ -79,19 +79,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     ///////////////////////////////////////////////////////////////
 
-    auto defrostState = new QState();
+    defrostState = new QState();
     stateMachine->addState(defrostState);
     addTrans(idleState, defrostState, defrostButton, SIGNAL(clicked()), this, SLOT(setDefrost()));
     addTrans(defrostState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
     addTrans(defrostState, cookingState, startButton, SIGNAL(clicked()), this, SLOT(setCooking()));
 
-    auto powerEditState = new QState();
+    powerEditState = new QState();
     stateMachine->addState(powerEditState);
     addTrans(idleState, powerEditState, powerButton, SIGNAL(clicked()), this, SLOT(setPowerEdit()));
     addTrans(powerEditState, durationEditState, powerButton, SIGNAL(clicked()), this, SLOT(setDurationEdit()));
     addTrans(powerEditState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
 
-    auto modeEditState = new QState();
+    modeEditState = new QState();
     stateMachine->addState(modeEditState);
     addTrans(idleState, modeEditState, modeButton, SIGNAL(clicked()), this, SLOT(setModeEdit()));
     addTrans(modeEditState, durationEditState, modeButton, SIGNAL(clicked()), this, SLOT(setDurationEdit()));
@@ -263,6 +263,33 @@ void MainWindow::resetStateMachine() {
 
 void MainWindow::manageDial(int value) {
     std::cout << "Dial value: " << value << std::endl;
+
+    // if the current state is clockEditState, update the hours
+    if (stateMachine->configuration().contains(editHoursState)) {
+        std::cout << "Update hours" << std::endl;
+        hours = value % 24;
+        displayClock();
+    } else if (stateMachine->configuration().contains(editMinutesState)) {
+        std::cout << "Update minutes" << std::endl;
+        minutes = value % 60;
+        displayClock();
+    } else if (stateMachine->configuration().contains(durationEditState)) {
+        std::cout << "Update duration" << std::endl;
+        duration = value;
+        displayDuration();
+    } else if (stateMachine->configuration().contains(powerEditState)) {
+        std::cout << "Update power" << std::endl;
+        power = 10 + value * 10 % 100;
+        displayPower();
+    } else if (stateMachine->configuration().contains(modeEditState)) {
+        std::cout << "Update mode" << std::endl;
+        mode = 1 + value % 3;
+        displayMode();
+    } else if (stateMachine->configuration().contains(defrostState)) {
+        std::cout << "Update weight" << std::endl;
+        weight = value % 1000;
+        displayWeight();
+    }
 }
 
 MainWindow::~MainWindow() {

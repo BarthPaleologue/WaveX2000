@@ -55,6 +55,15 @@ class MainWindow : public QMainWindow {
     QState* idleState{};
     QState* cookingState{};
 
+    QState* clockEditState{};
+    QState* editHoursState{};
+    QState* editMinutesState{};
+
+    QState* durationEditState{};
+    QState* powerEditState{};
+    QState* modeEditState{};
+    QState* defrostState{};
+
     QLabel* cookIndicator{};
 
     QPushButton* clockButton{};
