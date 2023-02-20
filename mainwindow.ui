@@ -102,13 +102,13 @@
      </item>
     </layout>
    </widget>
-   <widget class="QLCDNumber" name="lcdNumber">
+   <widget class="QLCDNumber" name="clockDisplay">
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>30</y>
+      <y>10</y>
       <width>181</width>
-      <height>23</height>
+      <height>41</height>
      </rect>
     </property>
    </widget>

@@ -1,10 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QLCDNumber>
 #include <QLabel>
 #include <QMainWindow>
 #include <QPushButton>
 #include <QStateMachine>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -27,11 +29,19 @@ class MainWindow : public QMainWindow {
     void setDefrost();
     void setPowerEdit();
     void setModeEdit();
+    void updateClock();
 
    private:
+    void displayClock();
+    void displayDuration();
+    void displayPower();
+    void displayMode();
+    void displayWeight();
+
     Ui::MainWindow* ui;
 
     QStateMachine* stateMachine{};
+    QState* idleState{};
 
     QLabel* cookIndicator{};
 
@@ -43,5 +53,16 @@ class MainWindow : public QMainWindow {
 
     QPushButton* startButton{};
     QPushButton* stopButton{};
+
+    QLCDNumber* clockDisplay{};
+
+    int hours{0};
+    int minutes{0};
+    QTimer* clockTimer{};
+
+    int duration{60};
+    int power{100};
+    int mode{0};
+    int weight{50};
 };
 #endif  // MAINWINDOW_H

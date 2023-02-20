@@ -21,9 +21,16 @@ MainWindow::MainWindow(QWidget *parent)
     startButton = findChild<QPushButton *>("startButton");
     stopButton = findChild<QPushButton *>("stopButton");
 
+    clockDisplay = findChild<QLCDNumber *>("clockDisplay");
+
     stateMachine = new QStateMachine();
 
-    auto idleState = new QState();
+    clockTimer = new QTimer(this);
+    clockTimer->setInterval(60 * 1000);  // 1 minute
+    connect(clockTimer, SIGNAL(timeout()), this, SLOT(updateClock()));
+    clockTimer->start();
+
+    idleState = new QState();
     stateMachine->addState(idleState);
 
     auto cookingState = new QState();
@@ -76,6 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
     addTrans(modeEditState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
 
     stateMachine->setInitialState(idleState);
+    setIdle();
     stateMachine->start();
 }
 
@@ -83,16 +91,23 @@ void MainWindow::setIdle() {
     // TODO:
     std::cout << "Set state to Idle" << std::endl;
     cookIndicator->setText("Idle");
+
+    // display the current time stored in this.hours and this.minutes
+    displayClock();
 }
 
 void MainWindow::setClockEditState() {
     // TODO:
     std::cout << "Set state to ClockEdit (Hours)" << std::endl;
+
+    displayClock();
 }
 
 void MainWindow::setClockMinuteEditState() {
     // TODO:
     std::cout << "Set state to ClockEdit (Minutes)" << std::endl;
+
+    displayClock();
 }
 
 void MainWindow::setCooking() {
@@ -100,11 +115,15 @@ void MainWindow::setCooking() {
     // Starts cooking and decrements the time
     std::cout << "Set state to Cooking" << std::endl;
     cookIndicator->setText("Cooking");
+
+    displayDuration();
 }
 
 void MainWindow::setDurationEdit() {
     // TODO:
     std::cout << "Set state to DurationEdit" << std::endl;
+
+    displayDuration();
 }
 
 void MainWindow::setDefrost() {
@@ -113,16 +132,62 @@ void MainWindow::setDefrost() {
     // The time will be calculated based on the weight
     std::cout << "Set state to Defrost" << std::endl;
     cookIndicator->setText("Defrost");
+
+    displayWeight();
 }
 
 void MainWindow::setPowerEdit() {
     // TODO:
     std::cout << "Set state to PowerEdit" << std::endl;
+
+    displayPower();
 }
 
 void MainWindow::setModeEdit() {
     // TODO:
     std::cout << "Set state to ModeEdit" << std::endl;
+
+    displayMode();
+}
+
+void MainWindow::updateClock() {
+    std::cout << "Update clock" << std::endl;
+    minutes++;
+    if (minutes == 60) {
+        minutes = 0;
+        hours++;
+        if (hours == 24) {
+            hours = 0;
+        }
+    }
+    // if current state is idle, update the clock display
+    if (stateMachine->configuration().contains(idleState)) {
+        displayClock();
+    }
+}
+
+void MainWindow::displayClock() {
+    clockDisplay->display(QString("%1:%2").arg(this->hours, 2, 10, QChar('0')).arg(this->minutes, 2, 10, QChar('0')));
+}
+
+void MainWindow::displayDuration() {
+    // display the remaining duration
+    clockDisplay->display(QString("%1").arg(this->duration, 2, 10, QChar('0')));
+}
+
+void MainWindow::displayPower() {
+    // display the power level
+    clockDisplay->display(QString("%1").arg(this->power, 2, 10, QChar('0')));
+}
+
+void MainWindow::displayMode() {
+    // display the mode
+    clockDisplay->display(QString("%1").arg(this->mode, 2, 10, QChar('0')));
+}
+
+void MainWindow::displayWeight() {
+    // display the weight
+    clockDisplay->display(QString("%1").arg(this->weight, 2, 10, QChar('0')));
 }
 
 MainWindow::~MainWindow() {
