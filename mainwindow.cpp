@@ -35,13 +35,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(clockTimer, SIGNAL(timeout()), this, SLOT(updateClock()));
     clockTimer->start();
 
-    pulseHourTimer = new QTimer(this);
-    pulseHourTimer->setInterval(1000);  // 1 second
-    connect(pulseHourTimer, SIGNAL(timeout()), this, SLOT(pulseHour()));
-
-    pulseMinuteTimer = new QTimer(this);
-    pulseMinuteTimer->setInterval(1000);  // 1 second
-    connect(pulseMinuteTimer, SIGNAL(timeout()), this, SLOT(pulseMinute()));
+    pulseTimer = new QTimer(this);
+    pulseTimer->setInterval(1000);  // 1 second
+    connect(pulseTimer, SIGNAL(timeout()), this, SLOT(pulseClock()));
+    pulseTimer->start();
 
     cookingTimer = new QTimer(this);
     cookingTimer->setInterval(1000);  // 1 second
@@ -109,8 +106,6 @@ void MainWindow::setIdle() {
     cookIndicator->setStyleSheet("background-color: #000000;");
 
     cookingTimer->stop();
-    pulseHourTimer->stop();
-    pulseMinuteTimer->stop();
 
     duration = MainWindow::DEFAULT_DURATION;
     power = MainWindow::DEFAULT_POWER;
@@ -124,16 +119,11 @@ void MainWindow::setIdle() {
 void MainWindow::setClockEditState() {
     std::cout << "Set state to ClockEdit (Hours)" << std::endl;
 
-    pulseHourTimer->start();
-
     displayClock();
 }
 
 void MainWindow::setClockMinuteEditState() {
     std::cout << "Set state to ClockEdit (Minutes)" << std::endl;
-
-    pulseHourTimer->stop();
-    pulseMinuteTimer->start();
 
     displayClock();
 }
@@ -201,25 +191,23 @@ void MainWindow::decreaseDuration() {
     displayDuration();
 }
 
-void MainWindow::pulseHour() {
-    // displays the clock but displays the hours in a pulsing fashion
-    // if the timer has run an odd number of times, display the hours, otherwise display --
-    pulseHourParity = pulseHourParity == 0 ? 1 : 0;
-    if (pulseHourParity) {
-        clockDisplay->display(QString("--:%1").arg(this->minutes, 2, 10, QChar('0')));
-    } else {
-        clockDisplay->display(QString("%1:%2").arg(this->hours, 2, 10, QChar('0')).arg(this->minutes, 2, 10, QChar('0')));
-    }
-}
-
-void MainWindow::pulseMinute() {
-    // displays the clock but displays the minutes in a pulsing fashion
-    // if the timer has run an odd number of times, display the minutes, otherwise display --
-    pulseMinuteParity = pulseMinuteParity == 0 ? 1 : 0;
-    if (pulseMinuteParity) {
-        clockDisplay->display(QString("%1:--").arg(this->hours, 2, 10, QChar('0')));
-    } else {
-        clockDisplay->display(QString("%1:%2").arg(this->hours, 2, 10, QChar('0')).arg(this->minutes, 2, 10, QChar('0')));
+void MainWindow::pulseClock() {
+    // if current state is clockEditHours, pulse the hours
+    // if current state is clockEditMinutes, pulse the minutes
+    if (stateMachine->configuration().contains(editHoursState)) {
+        pulseHourParity = pulseHourParity == 0 ? 1 : 0;
+        if (pulseHourParity) {
+            clockDisplay->display(QString("--:%1").arg(this->minutes, 2, 10, QChar('0')));
+        } else {
+            clockDisplay->display(QString("%1:%2").arg(this->hours, 2, 10, QChar('0')).arg(this->minutes, 2, 10, QChar('0')));
+        }
+    } else if (stateMachine->configuration().contains(editMinutesState)) {
+        pulseMinuteParity = pulseMinuteParity == 0 ? 1 : 0;
+        if (pulseMinuteParity) {
+            clockDisplay->display(QString("%1:--").arg(this->hours, 2, 10, QChar('0')));
+        } else {
+            clockDisplay->display(QString("%1:%2").arg(this->hours, 2, 10, QChar('0')).arg(this->minutes, 2, 10, QChar('0')));
+        }
     }
 }
 

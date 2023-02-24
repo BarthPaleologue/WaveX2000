@@ -41,8 +41,7 @@ class MainWindow : public QMainWindow {
     void updateClock();
     void decreaseDuration();
 
-    void pulseHour();
-    void pulseMinute();
+    void pulseClock();
 
     void manageDial(int value);
 
@@ -93,9 +92,8 @@ class MainWindow : public QMainWindow {
     int hours{0};
     int minutes{0};
     QTimer* clockTimer{};
-    QTimer* pulseHourTimer{};
+    QTimer* pulseTimer{};
     int pulseHourParity{0};
-    QTimer* pulseMinuteTimer{};
     int pulseMinuteParity{0};
 
     QTimer* cookingTimer{};
