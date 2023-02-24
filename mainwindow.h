@@ -2,9 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QDial>
+#include <QGraphicsPixmapItem>
 #include <QLCDNumber>
 #include <QLabel>
 #include <QMainWindow>
+#include <QPixmap>
 #include <QPushButton>
 #include <QStateMachine>
 #include <QTimer>
@@ -106,5 +108,8 @@ class MainWindow : public QMainWindow {
     int power{DEFAULT_POWER};
     int mode{DEFAULT_MODE};
     int weight{DEFAULT_WEIGHT};
+
+    QGraphicsPixmapItem* idleGrid{};
+    QGraphicsPixmapItem* cookingGrid{};
 };
 #endif  // MAINWINDOW_H

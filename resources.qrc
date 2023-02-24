@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/grids">
         <file>grid.jpg</file>
+        <file>gridStopped.jpg</file>
+        <file>gridIdle.jpg</file>
+        <file>gridRunning.jpg</file>
     </qresource>
 </RCC>

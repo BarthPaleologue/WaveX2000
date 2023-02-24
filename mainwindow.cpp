@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 
-#include <QGraphicsPixmapItem>
-#include <QPixmap>
 #include <QtUiTools/QtUiTools>
 #include <iostream>
 
@@ -15,10 +13,12 @@ MainWindow::MainWindow(QWidget *parent)
     setFixedSize(size());
 
     cookIndicator = findChild<QLabel *>("cookIndicator");
-    QGraphicsPixmapItem item(QPixmap(":/grids/grid.jpg"));
-    item.setTransformationMode(Qt::SmoothTransformation);
-    cookIndicator->setPixmap(item.pixmap());
-    cookIndicator->setScaledContents(true);
+
+    idleGrid = new QGraphicsPixmapItem(QPixmap(":/grids/gridIdle.jpg"));
+    idleGrid->setTransformationMode(Qt::SmoothTransformation);
+
+    cookingGrid = new QGraphicsPixmapItem(QPixmap(":/grids/gridRunning.jpg"));
+    cookingGrid->setTransformationMode(Qt::SmoothTransformation);
 
     clockButton = findChild<QPushButton *>("clockButton");
     powerButton = findChild<QPushButton *>("powerButton");
@@ -114,9 +114,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::setIdle() {
     std::cout << "Set state to Idle" << std::endl;
-    cookIndicator->setStyleSheet("background-color: #000000;");
 
     cookingTimer->stop();
+
+    cookIndicator->setPixmap(idleGrid->pixmap());
+    cookIndicator->setScaledContents(true);
 
     duration = MainWindow::DEFAULT_DURATION;
     power = MainWindow::DEFAULT_POWER;
@@ -142,9 +144,10 @@ void MainWindow::setClockMinuteEditState() {
 void MainWindow::setCooking() {
     // Starts cooking and decrements the time
     std::cout << "Set state to Cooking" << std::endl;
-    cookIndicator->setStyleSheet("background-color: #ffff00;");
-
     cookingTimer->start();
+
+    cookIndicator->setPixmap(cookingGrid->pixmap());
+    cookIndicator->setScaledContents(true);
 
     displayDuration();
 }
@@ -158,7 +161,6 @@ void MainWindow::setDefrost() {
     // The user will enter the weight of the food to be defrosted
     // The time will be calculated based on the weight
     std::cout << "Set state to Defrost" << std::endl;
-    cookIndicator->setStyleSheet("background-color: #0000ff;");
     displayWeight();
 }
 
