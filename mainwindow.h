@@ -43,6 +43,8 @@ class MainWindow : public QMainWindow {
     void updateClock();
     void decreaseDuration();
 
+    void increaseDuration30();
+
     void pulseClock();
 
     void manageDial(int value);

@@ -60,9 +60,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     cookingState = new QState();
     stateMachine->addState(cookingState);
+    addTrans(cookingState, cookingState, startButton, SIGNAL(clicked()), this, SLOT(increaseDuration30()));
     addTrans(idleState, cookingState, startButton, SIGNAL(clicked()), this, SLOT(setCooking()));
     addTrans(cookingState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
-    addTrans(cookingState, cookingState, startButton, SIGNAL(clicked()), this, SLOT(setCooking()));
     addTrans(isFinishedCooking, cookingState, idleState, cookingTimer, SIGNAL(timeout()), this, SLOT(setIdle()));
 
     durationEditState = new QState();
@@ -275,6 +275,13 @@ void MainWindow::manageDial(int value) {
         std::cout << "Update weight" << std::endl;
         weight = value % 1000;
         displayWeight();
+    }
+}
+
+void MainWindow::increaseDuration30() {
+    if (!isFinishedCooking) {
+        duration += 30;
+        displayDuration();
     }
 }
 
