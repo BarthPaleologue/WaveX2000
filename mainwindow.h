@@ -69,9 +69,10 @@ class MainWindow : public QMainWindow {
 
     QStateMachine* stateMachine{};
     QState* idleState{};
+    QState* notIdleState{};
+
     QState* cookingState{};
 
-    QState* clockEditState{};
     QState* editHoursState{};
     QState* editMinutesState{};
 

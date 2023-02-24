@@ -58,47 +58,44 @@ MainWindow::MainWindow(QWidget *parent)
     idleState = new QState();
     stateMachine->addState(idleState);
 
-    cookingState = new QState();
+    notIdleState = new QState();
+    stateMachine->addState(notIdleState);
+    addTrans(notIdleState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
+
+    cookingState = new QState(notIdleState);
     stateMachine->addState(cookingState);
     addTrans(cookingState, cookingState, startButton, SIGNAL(clicked()), this, SLOT(increaseDuration30()));
     addTrans(idleState, cookingState, startButton, SIGNAL(clicked()), this, SLOT(setCooking()));
-    addTrans(cookingState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
     addTrans(isFinishedCooking, cookingState, idleState, cookingTimer, SIGNAL(timeout()), this, SLOT(setIdle()));
 
-    durationEditState = new QState();
+    durationEditState = new QState(notIdleState);
     stateMachine->addState(durationEditState);
-    addTrans(durationEditState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
     addTrans(durationEditState, cookingState, startButton, SIGNAL(clicked()), this, SLOT(setCooking()));
 
-    editHoursState = new QState();
+    editHoursState = new QState(notIdleState);
     stateMachine->addState(editHoursState);
     addTrans(idleState, editHoursState, clockButton, SIGNAL(clicked()), this, SLOT(setClockHourEditState()));
     addTrans(editHoursState, editMinutesState, clockButton, SIGNAL(clicked()), this, SLOT(setClockMinuteEditState()));
-    addTrans(editHoursState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
 
-    editMinutesState = new QState();
+    editMinutesState = new QState(notIdleState);
     stateMachine->addState(editMinutesState);
     addTrans(editHoursState, editMinutesState, clockButton, SIGNAL(clicked()), this, SLOT(setClockMinuteEditState()));
-    addTrans(editMinutesState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
     addTrans(editMinutesState, idleState, clockButton, SIGNAL(clicked()), this, SLOT(setIdle()));
 
-    defrostState = new QState();
+    defrostState = new QState(notIdleState);
     stateMachine->addState(defrostState);
     addTrans(idleState, defrostState, defrostButton, SIGNAL(clicked()), this, SLOT(setDefrost()));
-    addTrans(defrostState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
     addTrans(defrostState, cookingState, startButton, SIGNAL(clicked()), this, SLOT(setCooking()));
 
-    powerEditState = new QState();
+    powerEditState = new QState(notIdleState);
     stateMachine->addState(powerEditState);
     addTrans(idleState, powerEditState, powerButton, SIGNAL(clicked()), this, SLOT(setPowerEdit()));
     addTrans(powerEditState, durationEditState, powerButton, SIGNAL(clicked()), this, SLOT(setDurationEdit()));
-    addTrans(powerEditState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
 
-    modeEditState = new QState();
+    modeEditState = new QState(notIdleState);
     stateMachine->addState(modeEditState);
     addTrans(idleState, modeEditState, modeButton, SIGNAL(clicked()), this, SLOT(setModeEdit()));
     addTrans(modeEditState, durationEditState, modeButton, SIGNAL(clicked()), this, SLOT(setDurationEdit()));
-    addTrans(modeEditState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
 
     stateMachine->setInitialState(idleState);
     setIdle();
