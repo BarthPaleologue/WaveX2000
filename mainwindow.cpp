@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
+    setFixedSize(size());
+
     cookIndicator = findChild<QLabel *>("cookIndicator");
 
     clockButton = findChild<QPushButton *>("clockButton");
@@ -238,16 +240,6 @@ void MainWindow::displayPower() {
 void MainWindow::displayMode() {
     // display the mode
     clockDisplay->display(QString("%1").arg(this->mode, 2, 10, QChar('0')));
-    /*if (this->mode == 0) {
-        clockDisplay->display("MICROWAVE");
-        return;
-    } else if (this->mode == 1) {
-        clockDisplay->display("GRILL");
-        return;
-    } else if (this->mode == 2) {
-        clockDisplay->display("GRILL + MICROWAVE");
-        return;
-    }*/
 }
 
 void MainWindow::displayWeight() {
@@ -269,7 +261,7 @@ void MainWindow::manageDial(int value) {
     // if the current state is clockEditState, update the hours
     if (stateMachine->configuration().contains(editHoursState)) {
         std::cout << "Update hours" << std::endl;
-        hours = value % 24;
+        hours = int(value / 4) % 24;
         displayClock();
     } else if (stateMachine->configuration().contains(editMinutesState)) {
         std::cout << "Update minutes" << std::endl;
@@ -281,7 +273,7 @@ void MainWindow::manageDial(int value) {
         displayDuration();
     } else if (stateMachine->configuration().contains(powerEditState)) {
         std::cout << "Update power" << std::endl;
-        power = 10 + value * 10 % 100;
+        power = 10 + 10 * int(value / 10) % 100;
         displayPower();
     } else if (stateMachine->configuration().contains(modeEditState)) {
         std::cout << "Update mode" << std::endl;
