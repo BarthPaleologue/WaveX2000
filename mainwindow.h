@@ -33,7 +33,7 @@ class MainWindow : public QMainWindow {
     ~MainWindow();
    public slots:
     void setIdle();
-    void setClockEditState();
+    void setClockHourEditState();
     void setClockMinuteEditState();
     void setCooking();
     void setDurationEdit();

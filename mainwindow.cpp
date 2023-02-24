@@ -70,25 +70,17 @@ MainWindow::MainWindow(QWidget *parent)
     addTrans(durationEditState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
     addTrans(durationEditState, cookingState, startButton, SIGNAL(clicked()), this, SLOT(setCooking()));
 
-    ////////////////////// Clock Edit State //////////////////////
-
-    clockEditState = new QState();
-    stateMachine->addState(clockEditState);
-    addTrans(idleState, clockEditState, clockButton, SIGNAL(clicked()), this, SLOT(setClockEditState()));
-    addTrans(clockEditState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
-
-    // add substates to the clockEditState (edit hours, edit minutes)
-    editHoursState = new QState(clockEditState);
-    editMinutesState = new QState(clockEditState);
-
-    // add transitions to the substates
+    editHoursState = new QState();
+    stateMachine->addState(editHoursState);
+    addTrans(idleState, editHoursState, clockButton, SIGNAL(clicked()), this, SLOT(setClockHourEditState()));
     addTrans(editHoursState, editMinutesState, clockButton, SIGNAL(clicked()), this, SLOT(setClockMinuteEditState()));
+    addTrans(editHoursState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
+
+    editMinutesState = new QState();
+    stateMachine->addState(editMinutesState);
+    addTrans(editHoursState, editMinutesState, clockButton, SIGNAL(clicked()), this, SLOT(setClockMinuteEditState()));
+    addTrans(editMinutesState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
     addTrans(editMinutesState, idleState, clockButton, SIGNAL(clicked()), this, SLOT(setIdle()));
-
-    // the default state is editHoursState
-    clockEditState->setInitialState(editHoursState);
-
-    ///////////////////////////////////////////////////////////////
 
     defrostState = new QState();
     stateMachine->addState(defrostState);
@@ -130,7 +122,7 @@ void MainWindow::setIdle() {
     displayClock();
 }
 
-void MainWindow::setClockEditState() {
+void MainWindow::setClockHourEditState() {
     std::cout << "Set state to ClockEdit (Hours)" << std::endl;
 
     displayClock();
