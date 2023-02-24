@@ -217,8 +217,10 @@ void MainWindow::displayClock() {
 }
 
 void MainWindow::displayDuration() {
-    // display the remaining duration
-    clockDisplay->display(QString("%1").arg(this->duration, 2, 10, QChar('0')));
+    // display the remaining duration in minutes and seconds
+    int minutes = this->duration / 60;
+    int seconds = this->duration % 60;
+    clockDisplay->display(QString("%1:%2").arg(minutes, 2, 10, QChar('0')).arg(seconds, 2, 10, QChar('0')));
 }
 
 void MainWindow::displayPower() {
