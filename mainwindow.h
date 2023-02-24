@@ -104,6 +104,8 @@ class MainWindow : public QMainWindow {
 
     QTimer* rumbleTimer{};
 
+    bool isFinishedCooking{true};
+
     int duration{DEFAULT_DURATION};
     int power{DEFAULT_POWER};
     int mode{DEFAULT_MODE};

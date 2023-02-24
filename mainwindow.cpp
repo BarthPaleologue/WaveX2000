@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(cookingTimer, SIGNAL(timeout()), this, SLOT(decreaseDuration()));
 
     rumbleTimer = new QTimer(this);
-    rumbleTimer->setInterval(1);
+    rumbleTimer->setInterval(16);
     connect(rumbleTimer, SIGNAL(timeout()), this, SLOT(rumble()));
     rumbleTimer->start();
 
@@ -63,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     addTrans(idleState, cookingState, startButton, SIGNAL(clicked()), this, SLOT(setCooking()));
     addTrans(cookingState, idleState, stopButton, SIGNAL(clicked()), this, SLOT(setIdle()));
     addTrans(cookingState, cookingState, startButton, SIGNAL(clicked()), this, SLOT(setCooking()));
+    addTrans(isFinishedCooking, cookingState, idleState, cookingTimer, SIGNAL(timeout()), this, SLOT(setIdle()));
 
     durationEditState = new QState();
     stateMachine->addState(durationEditState);
@@ -146,6 +147,8 @@ void MainWindow::setCooking() {
     std::cout << "Set state to Cooking" << std::endl;
     cookingTimer->start();
 
+    isFinishedCooking = false;
+
     cookIndicator->setPixmap(cookingGrid->pixmap());
     cookIndicator->setScaledContents(true);
 
@@ -193,15 +196,10 @@ void MainWindow::updateClock() {
 void MainWindow::decreaseDuration() {
     std::cout << "Decrease duration" << std::endl;
     duration--;
-
     if (duration == 0) {
         cookingTimer->stop();
-
-        resetStateMachine();
-
-        return;
+        isFinishedCooking = true;
     }
-
     displayDuration();
 }
 
@@ -247,14 +245,6 @@ void MainWindow::displayMode() {
 void MainWindow::displayWeight() {
     // display the weight
     clockDisplay->display(QString("%1").arg(this->weight, 2, 10, QChar('0')));
-}
-
-void MainWindow::resetStateMachine() {
-    // reset state machine
-    stateMachine->stop();
-    stateMachine->setInitialState(idleState);
-    stateMachine->start();
-    setIdle();
 }
 
 void MainWindow::manageDial(int value) {
