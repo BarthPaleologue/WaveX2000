@@ -45,6 +45,8 @@ class MainWindow : public QMainWindow {
 
     void manageDial(int value);
 
+    void rumble();
+
    private:
     static const int DEFAULT_DURATION = 60;
     static const int DEFAULT_POWER = 100;
@@ -97,6 +99,8 @@ class MainWindow : public QMainWindow {
     int pulseMinuteParity{0};
 
     QTimer* cookingTimer{};
+
+    QTimer* rumbleTimer{};
 
     int duration{DEFAULT_DURATION};
     int power{DEFAULT_POWER};

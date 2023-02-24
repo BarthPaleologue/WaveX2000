@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/grids">
+        <file>grid.jpg</file>
+    </qresource>
+</RCC>

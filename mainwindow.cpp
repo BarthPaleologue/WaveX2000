@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 
+#include <QGraphicsPixmapItem>
+#include <QPixmap>
 #include <QtUiTools/QtUiTools>
 #include <iostream>
 
@@ -13,6 +15,10 @@ MainWindow::MainWindow(QWidget *parent)
     setFixedSize(size());
 
     cookIndicator = findChild<QLabel *>("cookIndicator");
+    QGraphicsPixmapItem item(QPixmap(":/grids/grid.jpg"));
+    item.setTransformationMode(Qt::SmoothTransformation);
+    cookIndicator->setPixmap(item.pixmap());
+    cookIndicator->setScaledContents(true);
 
     clockButton = findChild<QPushButton *>("clockButton");
     powerButton = findChild<QPushButton *>("powerButton");
@@ -43,6 +49,11 @@ MainWindow::MainWindow(QWidget *parent)
     cookingTimer = new QTimer(this);
     cookingTimer->setInterval(1000);  // 1 second
     connect(cookingTimer, SIGNAL(timeout()), this, SLOT(decreaseDuration()));
+
+    rumbleTimer = new QTimer(this);
+    rumbleTimer->setInterval(1);
+    connect(rumbleTimer, SIGNAL(timeout()), this, SLOT(rumble()));
+    rumbleTimer->start();
 
     idleState = new QState();
     stateMachine->addState(idleState);
@@ -180,6 +191,7 @@ void MainWindow::updateClock() {
 void MainWindow::decreaseDuration() {
     std::cout << "Decrease duration" << std::endl;
     duration--;
+
     if (duration == 0) {
         cookingTimer->stop();
 
@@ -257,7 +269,7 @@ void MainWindow::manageDial(int value) {
         displayClock();
     } else if (stateMachine->configuration().contains(durationEditState)) {
         std::cout << "Update duration" << std::endl;
-        duration = value;
+        duration = int(value / 10) * 30;
         displayDuration();
     } else if (stateMachine->configuration().contains(powerEditState)) {
         std::cout << "Update power" << std::endl;
@@ -272,6 +284,14 @@ void MainWindow::manageDial(int value) {
         weight = value % 1000;
         displayWeight();
     }
+}
+
+void MainWindow::rumble() {
+    if (!cookingTimer->isActive()) return;
+    // move window by random x and y
+    int x = rand() % 3 - 1;
+    int y = rand() % 3 - 1;
+    this->move(this->x() + x, this->y() + y);
 }
 
 MainWindow::~MainWindow() {
